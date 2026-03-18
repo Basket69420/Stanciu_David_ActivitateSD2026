@@ -85,8 +85,12 @@ void adaugaMasinaInLista(Nod** cap, Masina masinaNoua) {
 
 }
 
-void adaugaLaInceputInLista(/*lista de masini*/ Masina masinaNoua) {
+void adaugaLaInceputInLista(Nod** cap, Masina masinaNoua) {
 	//adauga la inceputul listei o noua masina pe care o primim ca parametru
+	Nod* nou = (Nod*)malloc(sizeof(Nod));
+	nou->info = masinaNoua;
+	nou->next = *cap;
+	*cap = nou;
 }
 
 void* citireListaMasiniDinFisier(const char* numeFisier) {
@@ -132,28 +136,28 @@ float calculeazaPretMediu(Nod* cap) {
 		return aux / cont;
 	
 }
-
 void stergeMasiniDinSeria(Nod** cap, char serieCautata) {
-	//sterge toate masinile din lista care au seria primita ca parametru.
-	//tratati situatia ca masina se afla si pe prima pozitie, si pe ultima pozitie
-	while (*cap)
-	{
+	while ((*cap) != NULL && (*cap)->info.serie == serieCautata) {
 		Nod* aux = *cap;
-		if ((*cap)->info.serie == serieCautata)
-		{
-			free((*cap)->info.model);
-			free((*cap)->info.numeSofer);
-			
-			aux = (*cap)->next;
-			free(*cap);
-			*cap = aux;
+		*cap = (*cap)->next;
+		free(aux);
+	}
+
+	Nod* precedent = *cap;
+	Nod* actual = (*cap)->next;
+	while (actual != NULL) {
+		if (actual->info.serie == serieCautata) {
+			precedent->next = actual->next;
+			free(actual);
+			actual = precedent->next;
 		}
-		else
-		{
-			*cap=(*cap)->next;
+		else {
+			precedent = actual;
+			actual = actual->next;
 		}
 	}
 }
+
 
 float calculeazaPretulMasinilorUnuiSofer(Nod* cap, const char* numeSofer) {
 	float aux=0;
@@ -187,7 +191,7 @@ int main() {
 	printf("Ionescu are networth ul de :%f\n\n\n", calculeazaPretulMasinilorUnuiSofer(cap, "Gigel"));
 	adaugaMasinaInLista(&cap, m);
 
-	//stergeMasiniDinSeria(&cap, "A");
+	stergeMasiniDinSeria(&cap, "A");
 	afisareListaMasini(cap);
 
 
