@@ -66,6 +66,11 @@ void afisareMasina(Masina masina) {
 
 void afisareListaMasini(ListaDubla lista) {
 	Nod* p = lista.prim;
+	if (!p)
+	{
+		printf("Lista este goala");
+		
+	}
 		while (p)
 		{
 			afisareMasina(p->info);
@@ -146,6 +151,8 @@ void dezalocareLDMasini(ListaDubla* ld) {
 		free(ld->prim->info.model);
 		free(ld->prim);
 	}
+	ld->prim = NULL;
+	ld->ultim = NULL;
 }
 
 float calculeazaPretMediu(ListaDubla lista) {
@@ -178,6 +185,7 @@ void stergeMasinaDupaID(ListaDubla*ld, int id) {
 			ld->ultim = NULL;
 		}
 		return;
+		
 	}
 	Nod* p = ld->prim;
 	while (p && p->info.id != id)
@@ -231,10 +239,12 @@ int main() {
 	ListaDubla lista = citireLDMasiniDinFisier("masini.txt");
 	afisareListaMasini(lista);
 
-	printf("%f", calculeazaPretMediu(lista));
-	printf("%s",getNumeSoferMasinaScumpa(lista));
+	printf("\n Valoarea medie a masinilor este %f", calculeazaPretMediu(lista));
+	printf("\n Cel mai bogat om din oras este: %s",getNumeSoferMasinaScumpa(lista));
 	stergeMasinaDupaID(&lista, 10);
-	printf("Masini dupa stergere:\n");
+	printf("\nMasini dupa stergere:\n");
+	afisareListaMasini(lista);
+	dezalocareLDMasini(&lista);
 	afisareListaMasini(lista);
 	return 0;
 }
