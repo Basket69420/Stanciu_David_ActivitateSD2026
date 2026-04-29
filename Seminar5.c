@@ -246,5 +246,6 @@
 //	afisareListaMasini(lista);
 //	dezalocareLDMasini(&lista);
 //	afisareListaMasini(lista);
+// 
 //	return 0;
 //}
