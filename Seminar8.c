@@ -135,6 +135,24 @@ Masina extrageMasina(Heap* heap) {
 	}
 	return m;
 }
+int calculeazaInaltimeArbore(Heap heap, int pozitieNod) {
+
+	if (pozitieNod >= heap.nrElementeViz)
+	{
+		return 0;
+	}
+	int inaltimeStanga = calculeazaInaltimeArbore(heap, 2 * pozitieNod + 1);
+	int inaltimeDreapta = calculeazaInaltimeArbore(heap, 2 * pozitieNod + 2);
+	if (inaltimeStanga > inaltimeDreapta)
+	{
+		return 1 + inaltimeStanga;
+	}
+	else 
+	{
+		return 1 + inaltimeDreapta;
+	}
+}
+
 
 
 void dezalocareHeap(Heap* heap) {
@@ -151,7 +169,8 @@ void dezalocareHeap(Heap* heap) {
 
 int main() {
 	Heap heap = citireHeapDeMasiniDinFisier("masini.txt");
-	afisareHeap(heap);
+	int inaltime = calculeazaInaltimeArbore;
+	printf("Inaltimea arborelui este: %d\n\n", calculeazaInaltimeArbore(heap, 0));
 	printf("Extrageri: \n");
 	afisareMasina(extrageMasina(&heap));
 	afisareMasina(extrageMasina(&heap));
