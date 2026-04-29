@@ -212,6 +212,7 @@ float calculeazaPretTotal(Nod* root)
 
 float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer) {
 	//calculeaza pretul tuturor masinilor unui sofer.
+
 	return 0;
 }
 
