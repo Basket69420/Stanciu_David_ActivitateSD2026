@@ -209,10 +209,23 @@ float calculeazaPretTotal(Nod* root)
 	}
 	return 0;
 }
+float calculeazaPretulMasinilorUnuiSofer(Nod* root, const char* numeSofer)
+{
+	if (root == NULL) return 0;
+	else
+	{
+		float stanga = calculeazaPretulMasinilorUnuiSofer(root->left, numeSofer);
+		float dreapta = calculeazaPretulMasinilorUnuiSofer(root->right, numeSofer);
 
-float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer) {
-	//calculeaza pretul tuturor masinilor unui sofer.
-
+		if (strcmp(root->info.numeSofer, numeSofer) == 0)
+		{
+			return root->info.pret + stanga + dreapta;
+		}
+		else
+		{
+			return stanga + dreapta;
+		}
+	}
 	return 0;
 }
 
@@ -224,7 +237,7 @@ int main()
 	printf("Numarul totoatl de noduri este:%d \n", determinaNumarNoduri(root));
 
 	printf("Inaltimea este:%d ", calculeazaInaltimeArbore(root));
-
+	printf("\nPret masini sofer cautat: %.2f\n", calculeazaPretulMasinilorUnuiSofer(root, "Ionescu"));
 
 	dezalocareArboreDeMasini(&root);
 	return 0;
