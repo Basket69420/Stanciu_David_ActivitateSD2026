@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//trebuie sa folositi fisierul masini.txt
-//sau va creati un alt fisier cu alte date
-
 struct StructuraMasina {
 	int id;
 	int nrUsi;
@@ -90,7 +87,7 @@ void adaugaMasinaInArboreEchilibrat(NodArbore** root, Masina masinaNoua) {
 		else {
 			adaugaMasinaInArboreEchilibrat(&(*root)->left, masinaNoua);
 		}
-		//incepe algoritmul de verificare a echilibrului
+
 		int factorEchilibru = verificareEchilibru(*root);
 		if (factorEchilibru == -2) {
 			if (verificareEchilibru((*root)->right) == -1) {
@@ -151,22 +148,104 @@ void dezalocareArboreDeMasini(NodArbore** root) {
 	}
 }
 
-//Preluati urmatoarele functii din laboratorul precedent.
-//Acestea ar trebuie sa functioneze pe noul arbore echilibrat.
+Masina getMasinaByID(NodArbore* root, int id)
+{
+	Masina m;
+	m.id = -1;
 
-Masina getMasinaByID(/*arborele de masini*/int id);
+	if (root)
+	{
+		if (root->info.id == id)
+		{
+			m = root->info;
 
-int determinaNumarNoduri(/*arborele de masini*/);
+			m.model = malloc(strlen(root->info.model) + 1);
+			strcpy_s(m.model, strlen(root->info.model) + 1, root->info.model);
+			m.numeSofer = malloc(strlen(root->info.numeSofer) + 1);
+			strcpy_s(m.numeSofer, strlen(root->info.numeSofer) + 1, root->info.numeSofer);
+			return m;
+		}
+		else
+		{
+			if (root->info.id <= id)
+			{
+				m = getMasinaByID(root->right, id);
+			}
+			else
+			{
+				m = getMasinaByID(root->left, id);
+			}
+		}
+	}
+	else
+		m.id = -1;
 
-float calculeazaPretTotal(/*arbore de masini*/);
+	return m;
+}
 
-float calculeazaPretulMasinilorUnuiSofer(/*arbore de masini*/ const char* numeSofer);
+int determinaNumarNoduri(NodArbore* root)
+{
+	if (root)
+	{
+		int nrNoduriSt = determinaNumarNoduri(root->left);
+		int nrNoduriDr = determinaNumarNoduri(root->right);
+		return 1 + nrNoduriDr + nrNoduriSt;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
-int main() {
+float calculeazaPretTotal(NodArbore* root)
+{
+	if (root == NULL) return 0;
+	else
+	{
+		float stanga = calculeazaPretTotal(root->left);
+		float dreapta = calculeazaPretTotal(root->right);
+		return root->info.pret + stanga + dreapta;
+	}
+	return 0;
+}
+
+float calculeazaPretulMasinilorUnuiSofer(NodArbore* root, const char* numeSofer)
+{
+	if (root == NULL) return 0;
+	else
+	{
+		float stanga = calculeazaPretulMasinilorUnuiSofer(root->left, numeSofer);
+		float dreapta = calculeazaPretulMasinilorUnuiSofer(root->right, numeSofer);
+
+		if (strcmp(root->info.numeSofer, numeSofer) == 0)
+		{
+			return root->info.pret + stanga + dreapta;
+		}
+		else
+		{
+			return stanga + dreapta;
+		}
+	}
+	return 0;
+}
+
+int main()
+{
 	NodArbore* root = NULL;
 	root = citireArboreDeMasiniDinFisier("masini.txt");
 	afisareMasiniDinArbore(root);
+
+	printf("Masina cu ID-ul 5:\n");
+	afisareMasina(getMasinaByID(root, 5));
+
+	printf("Numarul total de noduri este: %d \n", determinaNumarNoduri(root));
+
+	printf("Pretul total al masinilor din arbore este: %.2f \n", calculeazaPretTotal(root));
+
+	printf("Pret masini sofer cautat: %.2f\n\n", calculeazaPretulMasinilorUnuiSofer(root, "Ionescu"));
+
 	dezalocareArboreDeMasini(&root);
 	afisareMasiniDinArbore(root);
+
 	return 0;
 }
